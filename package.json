@@ -7,7 +7,7 @@
     "build-gha": "slidev build --base /git-mcp-jcon-europe/",
     "dev": "slidev --open",
     "export": "slidev export",
-    "export-pdf": "slidev export --with-clicks --format pdf --output dist/index.pdf"
+    "export-pdf": "slidev export --with-clicks --format pdf --output dist/index.pdf --dark"
   },
   "dependencies": {
     "@aptre/pragmasevka": "^1.0.5",
