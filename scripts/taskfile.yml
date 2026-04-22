@@ -1,0 +1,115 @@
+version: '3'
+
+vars:
+  LOGIN_DIR: login-bug-demo
+  MESSY_DIR: messy-pr-demo
+  RESET_DIR: accidental-reset-demo
+
+tasks:
+  setup:
+    desc: "Setup all demo repositories"
+    cmds:
+      - task: setup-bisect
+      - task: setup-rebase
+      - task: setup-reflog
+    silent: true
+
+  ## DEMO 1: BISECT
+  setup-bisect:
+    desc: "Setup Demo 1: The Mysterious Bug"
+    generates:
+      - "{{.LOGIN_DIR}}"
+    cmds:
+      - mkdir -p {{.LOGIN_DIR}}
+      - |
+        cd {{.LOGIN_DIR}}
+        git init -q
+        git config user.email "demo@example.com"
+        git config user.name "Demo User"
+        cat > Login.java <<'JAVA'
+        public class Login {
+            public static boolean login(String u, String p) {
+                return "admin".equals(u) && "secret".equals(p);
+            }
+            public static void main(String[] args) {
+                boolean ok = login("admin", "secret");
+                System.out.println(ok ? "✅ LOGIN WORKING" : "❌ LOGIN BROKEN");
+                System.exit(ok ? 0 : 1);
+            }
+        }
+        JAVA
+        git add Login.java && git commit -m "Implement login feature" -q
+        for i in {1..10}; do
+          echo "// Improvement $i" >> Login.java
+          git add Login.java && git commit -m "Login improvement $i" -q
+        done
+        cat > Login.java <<'JAVA'
+        public class Login {
+            public static boolean login(String u, String p) {
+                return false;
+            }
+            public static void main(String[] args) {
+                boolean ok = login("admin", "secret");
+                System.out.println(ok ? "✅ LOGIN WORKING" : "❌ LOGIN BROKEN");
+                System.exit(ok ? 0 : 1);
+            }
+        }
+        JAVA
+        git add Login.java && git commit -m "Refactor login validation" -q
+        for i in {1..5}; do
+          echo "// Post-bug change $i" >> Login.java
+          git add Login.java && git commit -m "Minor update $i" -q
+        done
+    status:
+      - test -d {{.LOGIN_DIR}}
+
+  test-login:
+    desc: "Internal helper to test login functionality"
+    dir: "{{.LOGIN_DIR}}"
+    cmds:
+      - java Login.java
+
+  ## DEMO 2: REBASE
+  setup-rebase:
+    desc: "Setup Demo 2: The Messy PR"
+    generates:
+      - "{{.MESSY_DIR}}"
+    cmds:
+      - mkdir -p {{.MESSY_DIR}}
+      - |
+        cd {{.MESSY_DIR}}
+        git init -q
+        git config user.email "demo@example.com"
+        git config user.name "Demo User"
+        echo "public class UserService {}" > UserService.java
+        git add . && git commit -m "feat: Add user service" -q
+        echo "// fix" >> UserService.java && git commit -am "fix: typo" -q
+        echo "// wip" >> UserService.java && git commit -am "wip: validation" -q
+        echo "// log" >> UserService.java && git commit -am "debug: log" -q
+        echo "// feat" >> UserService.java && git commit -am "feat: add email validation" -q
+        echo "// fix" >> UserService.java && git commit -am "fix: regex" -q
+
+  ## DEMO 3: REFLOG
+  setup-reflog:
+    desc: "Setup Demo 3: The Accidental Reset"
+    generates:
+      - "{{.RESET_DIR}}"
+    cmds:
+      - mkdir -p {{.RESET_DIR}}
+      - |
+        cd {{.RESET_DIR}}
+        git init -q
+        git config user.email "demo@example.com"
+        git config user.name "Demo User"
+        for i in {1..5}; do
+          echo "Work $i" > "file$i.txt"
+          git add . && git commit -m "Add important work $i" -q
+        done
+        # Simulate accidental reset — last 3 commits vanish from log
+        # but remain in reflog as HEAD@{1}..HEAD@{3}
+        git reset --hard HEAD~3 -q
+
+  clean:
+    desc: "Remove all demo directories"
+    cmds:
+      - rm -rf {{.LOGIN_DIR}} {{.MESSY_DIR}} {{.RESET_DIR}}
