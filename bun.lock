@@ -9,7 +9,7 @@
         "@slidev/cli": "^52.14.1",
         "@slidev/theme-default": "latest",
         "@slidev/theme-seriph": "latest",
-        "slidev-theme-field-manual": "^0.1.0",
+        "slidev-theme-field-manual": "^0.2.0",
         "vue": "^3.5.29",
       },
       "devDependencies": {
@@ -1176,7 +1176,7 @@
 
     "sisteransi": ["sisteransi@1.0.5", "", {}, "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg=="],
 
-    "slidev-theme-field-manual": ["slidev-theme-field-manual@0.1.0", "", {}, "sha512-sQCkXZog73a32F8+7eaGMEMXKTUtutAQ13Z/lP+nCihP3nb+16vz7PhS64QOHx8wPj4VssgPDnGd19uTJCYb9g=="],
+    "slidev-theme-field-manual": ["slidev-theme-field-manual@0.2.0", "", {}, "sha512-Ri974mmoIcqBfA7X5VM82SABnq30KaFYqtrEoBYIbf7MdpXU+A6mmtpt2aioKzvTBxSICvDpnB9xpQ3nUvOCmA=="],
 
     "source-map-js": ["source-map-js@1.2.1", "", {}, "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="],
 
